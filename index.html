@@ -18,8 +18,16 @@
     </head>
     <body>
         <style>
+            body{
+                padding: 25px;
+            }
             #remotes video {
                 height: 150px;
+            }
+
+            video  {
+                border: 6px solid #ccc;
+                padding: 5px;
             }
 
             h1{
@@ -45,15 +53,15 @@
         <img src="images/logo.png">
 
         <div id="container">
-        <!-- -->
-           <button type="button" id="screenShareButton"></button>
+        <!-- --> 
+           <button type="button" id="screenShareButton" class="btn btn-primary"></button>
 
             <p id="subTitle"></p>
-            <div class="room-form">
+            <div class="room-form" id="formRoom">
                     <h2>Get a room</h2>
                 <div class="control-group">
                <form id="createRoom">
-                    <input type="text" value="" placeholder="name the conversation" />
+                    <input type="text" id="sessionInput" placeholder="name the conversation" />
                     <button type="submit" class="btn btn-primary btn-large btn-block">Create it!</button>
                 </div>
                 </form>
@@ -62,7 +70,7 @@
             <video id="localVideo" style="height: 150px;"></video>
             <div id="remotes"></div>
         </div>
-        <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.0/jquery.min.js"></script>
+        <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.0/jquery.min.js"></script>
         <script src="js/latest.js"></script>
         <script>
             // grab the room from the URL
@@ -87,7 +95,8 @@
             
             // Since we use this twice we put it here
             function setRoom(name) {
-                $('form').remove();
+                console.log("Set Room");
+                $('#formRoom').remove();
                 $('h1').text(name);
                 $('#subTitle').text('Link to join: ' + location.href);
                 $('body').addClass('active');
