@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>SimpleWebRTC Demo - LordAlex Works.com </title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <!-- Loading Bootstrap -->
+        <link href="bootstrap/css/bootstrap.css" rel="stylesheet">
+
+        <!-- Loading Flat UI -->
+        <link href="css/flat-ui.css" rel="stylesheet">
+
+        <link rel="shortcut icon" href="images/favicon.ico">
+
+        <!-- HTML5 shim, for IE6-8 support of HTML5 elements. All other JS at the end of file. -->
+        <!--[if lt IE 9]>
+          <script src="js/html5shiv.js"></script>
+        <![endif]-->
+    </head>
+    <body>
+        <style>
+            body{
+                padding: 25px;
+            }
+            #remotes video {
+                height: 150px;
+            }
+
+            video  {
+                border: 6px solid #ccc;
+                padding: 5px;
+            }
+
+            h1{
+                color: white;
+            }
+
+            .room-form{
+              background-color: #edeff1;
+              padding: 24px 23px 10px;
+              -webkit-border-radius: 6px;
+              -moz-border-radius: 6px;
+              border-radius: 6px;
+              height: 150px;
+              width: 400px;
+              margin: 0 auto 20px;
+            }
+            input{
+                width: 384px;
+                margin-bottom: 5px;
+            }
+            }
+        </style>
+        <img src="images/logo.png">
+
+        <div id="container">
+        <!-- --> 
+           <button type="button" id="screenShareButton" class="btn btn-primary"></button>
+
+            <p id="subTitle"></p>
+            <div class="room-form" id="formRoom">
+                    <h2>Get a room</h2>
+                <div class="control-group">
+               <form id="createRoom">
+                    <input type="text" id="sessionInput" placeholder="name the conversation" />
+                    <button type="submit" class="btn btn-primary btn-large btn-block">Create it!</button>
+                </div>
+                </form>
+              </div>
+            </div>
+            <video id="localVideo" style="height: 150px;"></video>
+            <div id="remotes"></div>
+        </div>
+        <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.0/jquery.min.js"></script>
+        <script src="js/latest.js"></script>
+        <script>
+            // grab the room from the URL
+            var room = location.search && location.search.split('?')[1];
+
+            // create our webrtc connection
+            var webrtc = new WebRTC({
+                // the id/element dom element that will hold "our" video
+                localVideoEl: 'localVideo',
+                // the id/element dom element that will hold remote videos
+                remoteVideosEl: 'remotes',
+                // immediately ask for camera access
+                autoRequestMedia: true,
+                log: true
+            });
+
+            // when it's ready, join if we got a room from the URL
+            webrtc.on('readyToCall', function () {
+                // you can name it anything
+                if (room) webrtc.joinRoom(room);
+            });
+            
+            // Since we use this twice we put it here
+            function setRoom(name) {
+                console.log("Set Room");
+                $('#formRoom').remove();
+                $('h1').text(name);
+                $('#subTitle').text('Link to join: ' + location.href);
+                $('body').addClass('active');
+            }
+
+            if (room) {
+                setRoom(room);
+            } else {
+                $('form').submit(function () {
+                    var val = $('#sessionInput').val().toLowerCase().replace(/\s/g, '-').replace(/[^A-Za-z0-9_\-]/g, '');
+                    webrtc.createRoom(val, function (err, name) {
+                        var newUrl = location.pathname + '?' + name;
+                        if (!err) {
+                            history.replaceState({foo: 'bar'}, null, newUrl);
+                            setRoom(name);
+                        }
+                    });
+                    return false;          
+                });
+            }
+
+            var button = $('#screenShareButton'),
+                setButton = function (bool) {
+                    button.text(bool ? 'share screen' : 'stop sharing');
+                };
+
+            setButton(true);
+
+            if (!webrtc.screenSharingSupport) {
+                button[0].disabled = true;
+            } else {
+                button.click(function () {
+                    if (webrtc.localScreen) {
+                        webrtc.stopScreenShare();
+                        setButton(true);
+                    } else {
+                        webrtc.shareScreen();
+                        setButton(false);
+                    }
+                });
+            }
+        </script>
+    </body>
+</html>
