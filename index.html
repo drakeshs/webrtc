@@ -32,12 +32,13 @@
               -webkit-border-radius: 6px;
               -moz-border-radius: 6px;
               border-radius: 6px;
-              height: 200px;
+              height: 150px;
               width: 400px;
               margin: 0 auto 20px;
             }
             input{
                 width: 384px;
+                margin-bottom: 5px;
             }
             }
         </style>
@@ -51,9 +52,11 @@
             <div class="room-form">
                     <h2>Get a room</h2>
                 <div class="control-group">
-                  <input type="text" value="" placeholder="name the conversation" />
+               <form id="createRoom">
+                    <input type="text" value="" placeholder="name the conversation" />
+                    <button type="submit" class="btn btn-primary btn-large btn-block">Create it!</button>
                 </div>
-                <a class="btn btn-primary btn-large btn-block" href="#">Create it!</a>
+                </form>
               </div>
             </div>
             <video id="localVideo" style="height: 150px;"></video>
